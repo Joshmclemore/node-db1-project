@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:id', middleWare.checkAccountId, async (req, res, next) => {
+router.get('/:id', middleWare.checkAccountId, (req, res, next) => {
       res.json(req.account)
 })
 
@@ -24,7 +24,9 @@ router.post(
   // DO YOUR MAGIC
   try {
     const newAccount = await Account
-    .create(req.body)
+    .create({ 
+      name: req.body.name.trim(),
+      budget: req.body.budget })
     res.status(201).json(newAccount)
   } catch (err) {
     next(err)
@@ -35,11 +37,11 @@ router.put(
   '/:id', 
   middleWare.checkAccountId, 
   middleWare.checkAccountPayload,
-  middleWare.checkAccountNameUnique,
-  (req, res, next) => {
+  async (req, res, next) => {
   // DO YOUR MAGIC
+  const updated = await Account.updateById(req.params.id, req.body)
   try {
-    res.json('update account')
+    res.json(updated)
   } catch (err) {
     next(err)
   }
