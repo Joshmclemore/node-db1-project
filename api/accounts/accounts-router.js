@@ -45,10 +45,11 @@ router.put(
   }
 });
 
-router.delete('/:id', middleWare.checkAccountId, (req, res, next) => {
+router.delete('/:id', middleWare.checkAccountId, async (req, res, next) => {
   // DO YOUR MAGIC
   try {
-    res.json('delete account')
+    await Account.deleteById(req.params.id)
+    res.json(req.account)
   } catch (err) {
     next(err)
   }
